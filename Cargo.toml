@@ -1,0 +1,16 @@
+[package]
+name = "read_json"
+version = "0.1.0"
+authors = ["Charles ORiley <ceoriley@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+error-chain = "0.12.2"
+serde = { version = "1.0.106", features = [ "derive" ] }
+serde_json = "1.0.51"
+serde_derive = "1.0.106"
+permutohedron = "0.2.4"
+
+
