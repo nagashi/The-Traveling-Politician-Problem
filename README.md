@@ -13,3 +13,5 @@ One particular mistake is very easy to make here: why not just find the shortest
 This problem is based on the “Traveling Salesman Problem”, which is a well-known graph theory problem that has been heavily studied by mathematicians. Many resources are available to study this problem under the title “Traveling Salesman Problem”.
 
 https://en.wikipedia.org/wiki/Travelling_salesman_problem
+
+The Traveling Politician Project is being written in various programming languages.  I elected to write this program using the Rust language.
