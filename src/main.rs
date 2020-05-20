@@ -12,7 +12,7 @@
 # OPTIONS: List options for the script [-h]					                    #
 #										                                        #
 # ERROR CONDITIONS: exit 1 ---- Invalid option					                #
-#                   exit 2 ----	Cannot find stated directory                    #
+#                   exit 2 ----	Cannot find stated file/directory               #
 #                   exit 3 ----	git command failed				                #
 #                   exit 4 ----	Cannot change to redis directory		        #
 #                   exit 5 ----	make failed					                    #
@@ -26,12 +26,16 @@
 # VERSION: 0.01.0								                                #
 # CREATED DATE-TIME: 20200305-15:02 Central Time Zone USA			            #
 #										                                        #
-# VERSION: 0.1.0								                                #
-# REVISION DATE-TIME: YYYYMMDD-HH:MM						                    #
-# DEVELOPER MAKING CHANGE: First_name Last_name					                #
+# VERSION: 0.02.0								                                #
+# REVISION DATE-TIME: YYYYMMDD-HH:MM                                            *
+# DEVELOPER MAKING CHANGE: First_name Last_name					                #			                                
 # DEVELOPER MAKING CHANGE: PHONE: +1 (XXX) XXX-XXXX				                #
 # DEVELOPER MAKING CHANGE: EMAIL: first.last@email.com				            #
-#                                                                               #
+# REVISION MADE:                                                                *
+* REVISION DATE-TIME: 20200520-17:00                                            *
+* Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
+* REVISION MADE: Added error checking and read and write                        *
+*                files from/to the base directory.                              *                                                                              #
 #*******************************************************************************#
 #
 */
@@ -92,9 +96,28 @@ fn main() {
 
 fn try_main() -> Result<(), Box<dyn Error>> {
     // Read the input file to string.
-    let mut file_states = File::open("src/states.json")?;
+    let file_states = File::open("states.json");
+
+    // Error(2) check for presence of file/directoery
+    let mut file_states = match file_states {
+        Ok(file) => file,
+        Err(error) => {
+            let msg = "There was a problem opening file states.json";
+            panic!("{:?}: {:?}", msg, error)
+        },
+    };
+
     let mut contents_states = String::new();
-    file_states.read_to_string(&mut contents_states)?;
+    let result = file_states.read_to_string(&mut contents_states);
+
+    // Errorcheck for read_to_string(&mut contents_states)
+    match result {
+        Ok(content) => { println!("Success file_states.read_to_string content: {}", content); } // Use content when implementing logging.
+        Err(error) => {
+            let msg = "Failed file_states.read_to_string(&mut contents_states)";
+            panic!("{:?}: {:?}", msg, error)
+        }
+    }
     
     // Deserialize and print Rust data structure.
     let data_states: Vec<ObjStates> = serde_json::from_str(&contents_states)?;
@@ -103,12 +126,44 @@ fn try_main() -> Result<(), Box<dyn Error>> {
     let to_state: &str = &data_states[0].to_state;
     
     // Lookup table
-    let mut file_look_up = File::open("src/look_up.json")?;
+    let file_look_up = File::open("look_up.json");
+
+    // Error(2) check for presence of file/directoery
+    let mut file_look_up = match file_look_up {
+        Ok(file) => file,
+        Err(error) => {
+            let msg = "There was a problem opening file lookup.json";
+            panic!("{:?}: {:?}", msg, error)
+        },
+    };
+
     let mut contents_look_up = String::new();
-        file_look_up.read_to_string(&mut contents_look_up)?;
+    let result = file_look_up.read_to_string(&mut contents_look_up);
+
+    // Errorcheck for read_to_string(&mut contents_look_up)
+    match result {
+        Ok(content) => { println!("Success file_look_up.read_to_string content: {}", content); } // Use content when implementing logging.
+        Err(error) => {
+            let msg = "Failed file_look_up.read_to_string(&mut contents_look_up)";
+            panic!("{:?}: {:?}", msg, error)
+        }
+    }
 
     // Deserialize and print Rust data structure.
     let data_look_up: Vec<ObjLookUp> = serde_json::from_str(&contents_look_up)?;
+
+    // Error check for deserializing file
+    match &data_look_up.len() > &0  {
+        true  => {
+            &data_look_up;
+            let msg = "Successfully deserialized data_look_up";
+            println!("\n{:?}: ", msg);
+        }, 
+        false => {
+            let msg = "Failed to deserialize data_look_up";
+            panic!("{:?}: ", msg)
+        },
+    };
     
     let num = data_look_up.len();
     
@@ -138,52 +193,58 @@ fn try_main() -> Result<(), Box<dyn Error>> {
         }
         
     }
-
-    let km_to_mi: f64 = 1.609344;     
+    // km_to_mi will be used to convert the
+    // default kilometers to miles.
+    let km_to_mi = 1.609344_f64;     
     let d: f64 = haversine_dist(lat1, lon1, lat2, lon2);
     println!("Distance from {} to {}: {:.1} km, {:.1} mi \n", from_state, to_state, d, d / km_to_mi);
     
-    // Compute to 1 digit after decimal point
-    let dist = ( ( (d/km_to_mi)  * 10.0).round() / 10.0).to_string();
+    // Compute to 1 digit after decimal point for the output file.
+    let d = ( ( (d/km_to_mi)  * 10.0).round() / 10.0).to_string();
 
     let obj = json!({
         "from_state":from_state.to_string(),
         "from_zipcode":from_zipcode,
         "to_state":to_state.to_string(),
         "to_zipcode":to_zipcode,
-        "distance":dist,
+        "distance":d,
     });
 
     // Write output to file.
-    fs::write("src/output.json", 
-            serde_json::to_string_pretty(&obj).unwrap()).ok();
+    let f = fs::write("output.json", 
+            serde_json::to_string_pretty(&obj).unwrap()); 
+    // Error check for writing file
+    match f {
+        Ok(file) => file,
+        Err(e) => {
+            let msg = "There was a problem writing file output.json";
+            panic!("{:?}: {:?}", msg, e)
+        },
+    };
 
     // Haversine is finished
     // Permutation begins
 
-    let num = data_look_up.len();
-    let mut data = Vec::new(); 
+    let num = data_look_up.len() - 46; // Don't allow all 51 states to be permutated.
+    let mut data = Vec::with_capacity(num); 
 
-    for x in 0..num - 47 {  // Don't allow all 51 states to be permutated.
-        if data_look_up[x].state != from_state && 
+    for x in 0..num {  
+        if data_look_up[x].state != from_state && // omit Iowa && DC
             data_look_up[x].state != to_state {
                 data.push( &data_look_up[x].state );
             }                         
     }
     
     let heap = Heap::new(&mut data);
-    let mut i: usize = 0;
+    let mut i: u128 = 0;
     let mut permutations = Vec::new();
     
-    for data in heap {    
+    for data in heap { 
         permutations.push(data.clone() );
         i += 1;
-        println!("\n#{:?}: {:?}", i, data);                   
+        println!("\n#{:?}: {:?}", i, data);
     }
-    
-    // will throw a panic error if not equal
-    assert_eq!(permutations.len(), i);
-    
+        
     // catch any '?' try_catch errors.
     Ok(())
 }
