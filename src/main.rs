@@ -54,7 +54,7 @@ use std::{
     fs,
     fs::File,
     io::{Read},
-    string::String    
+    string::String
 };
 
 use permutohedron::Heap;
@@ -63,6 +63,15 @@ use permutohedron::Heap;
 struct ObjStates {
     from_state: String,
     to_state: String
+}
+
+#[allow(dead_code)]
+struct Coordinate<'a> {
+    from_latitude: &'a f64,
+    from_longitude: &'a f64,
+    to_latitude: &'a f64,
+    to_longitude: &'a f64,
+    distance: &'a f64
 }
 
 #[derive(Deserialize, Debug)]
@@ -119,8 +128,21 @@ fn try_main() -> Result<(), Box<dyn Error>> {
         }
     }
     
-    // Deserialize and print Rust data structure.
+    // Deserialize data structure.
     let data_states: Vec<ObjStates> = serde_json::from_str(&contents_states)?;
+
+    // Error check for deserializing file
+    match &data_states.len() > &0  {
+        true  => {
+            &data_states;
+            let msg = "Successfully deserialized data_states";
+            println!("\n{:?}: ", msg);
+        }, 
+        false => {
+            let msg = "Failed to deserialize data_states";
+            panic!("{:?}: ", msg)
+        },
+    };
 
     let from_state: &str = &data_states[0].from_state;
     let to_state: &str = &data_states[0].to_state;
@@ -175,7 +197,7 @@ fn try_main() -> Result<(), Box<dyn Error>> {
     let mut lat2: f64 = 1.0;
     let mut from_zipcode: String = "0".to_string();
     let mut to_zipcode: String = "0".to_string();
-    
+        
     // Loop through lookup file to verify input.
     for x in 0..num {
 
@@ -237,12 +259,32 @@ fn try_main() -> Result<(), Box<dyn Error>> {
     
     let heap = Heap::new(&mut data);
     let mut i: u128 = 0;
-    let mut permutations = Vec::new();
+    let mut perm = Vec::new();
     
     for data in heap { 
-        permutations.push(data.clone() );
+        let nbr = data.len() ;
+        for x in 0..nbr {
+            let _c = data[x];
+
+            if x == 0 {
+                perm.clear();
+                let mut a = vec!["IA"];
+                perm.append(&mut a);
+                perm.push(_c);
+
+            }else if x == nbr - 1 {
+                perm.push(_c);
+                let mut b = vec!["DC"];
+                perm.append(&mut b);
+                
+            }else {
+                perm.push(_c);
+            }
+        }    
+        
         i += 1;
-        println!("\n#{:?}: {:?}", i, data);
+       println!("\n#{:?}: {:?} {:?}", i, data, &perm);
+              
     }
         
     // catch any '?' try_catch errors.
