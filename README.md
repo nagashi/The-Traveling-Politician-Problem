@@ -1,4 +1,4 @@
-The Traveling Politician Problem                                                      
+# The Traveling Politician Problem                                                      
 
 Advisor: Verbus M. Counts
 Interns: Trent Rogers, Kranthi Raj Vellanki, Ember Carpenter, 
@@ -14,4 +14,4 @@ This problem is based on the “Traveling Salesman Problem”, which is a well-k
 
 https://en.wikipedia.org/wiki/Travelling_salesman_problem
 
-The Traveling Politician Project is being written in various programming languages.  I elected to pursue  this project using the Rust language.
+The Traveling Politician Project is being written in various programming languages.  I elected to pursue this project using the Rust language.
