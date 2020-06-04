@@ -3,18 +3,19 @@
 #										                                        #
 # FILE: main.rs								                                    #
 #										                                        #
-# USAGE: redis.sh [-h] 								                            #
+# USAGE: neo4j [-h] 								                            #
 #										                                        #
 # DESCRIPTION: The haversine formula, an equation important in		            #
 #              navigation, is used here to determine the                        #
-#              distance between zip codes in miles.                             #
+#              distance between states in miles using                           #
+#              longitude and latitude.                                          #
 #										                                        #
 # OPTIONS: List options for the script [-h]					                    #
 #										                                        #
 # ERROR CONDITIONS: exit 1 ---- Invalid option					                #
 #                   exit 2 ----	Cannot find stated file/directory               #
 #                   exit 3 ----	git command failed				                #
-#                   exit 4 ----	Cannot change to redis directory		        #
+#                   exit 4 ----	Cannot change to neo4j directory		        #
 #                   exit 5 ----	make failed					                    #
 #                   exit 6 ----	make test failed				                #
 #                   exit 99 ---	killed by external forces			            #
@@ -35,7 +36,11 @@
 * REVISION DATE-TIME: 20200520-17:00                                            *
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Added error checking and read and write                        *
-*                files from/to the base directory.                              *                                                                              #
+*                files from/to the base directory.                              *
+* REVISION DATE-TIME: 20200605-20:05                                            *
+* Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
+* REVISION MADE: Moved the haversine_dist function to a                         *
+*                library.                                                       *                                                                              #
 #*******************************************************************************#
 #
 */
@@ -45,6 +50,8 @@ extern crate serde_derive;
 extern crate permutohedron;
 extern crate serde;
 extern crate serde_json;
+
+extern crate read_json;
 
 use serde_json::json;
 
@@ -76,20 +83,6 @@ struct ObjLookUp {
     longitude: String,
     classification: String,
     population: String,
-}
-
-// single, non mutable, precise memory address for R i.e. (static R: f64)
-static R: f64 = 6371.0; // Earth radius in kilometers
-
-fn haversine_dist(mut th1: f64, mut ph1: f64, mut th2: f64, ph2: f64) -> f64 {
-    ph1 -= ph2;
-    ph1 = ph1.to_radians();
-    th1 = th1.to_radians();
-    th2 = th2.to_radians();
-    let dz: f64 = th1.sin() - th2.sin();
-    let dx: f64 = ph1.cos() * th1.cos() - th2.cos();
-    let dy: f64 = ph1.sin() * th1.cos();
-    ((dx * dx + dy * dy + dz * dz).sqrt() / 2.0).asin() * 2.0 * R
 }
 
 fn main() {
@@ -213,7 +206,7 @@ fn try_main() -> Result<(), Box<dyn Error>> {
     // km_to_mi will be used to convert the
     // default kilometers to miles.
     let km_to_mi = 1.609344_f64;
-    let d: f64 = haversine_dist(lat1, lon1, lat2, lon2);
+    let d: f64 = read_json::haversine_dist(lat1, lon1, lat2, lon2);
     println!(
         "Distance from {} to {}: {:.1} km, {:.1} mi \n",
         from_state,
@@ -247,7 +240,7 @@ fn try_main() -> Result<(), Box<dyn Error>> {
     // Haversine is finished
     // Permutation begins
 
-    let num = data_look_up.len() - 46; // Don't allow all 51 states to be permutated.
+    let num = data_look_up.len() - 47; // Don't allow all 51 states to be permutated.
     let mut data = Vec::with_capacity(num);
 
     for x in 0..num {
