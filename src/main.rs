@@ -1,48 +1,51 @@
 /*
-#*******************************************************************************#
-#										                                        #
-# FILE: main.rs								                                    #
-#										                                        #
-# USAGE: neo4j [-h] 								                            #
-#										                                        #
-# DESCRIPTION: The haversine formula, an equation important in		            #
-#              navigation, is used here to determine the                        #
-#              distance between states in miles using                           #
-#              longitude and latitude.                                          #
-#										                                        #
-# OPTIONS: List options for the script [-h]					                    #
-#										                                        #
-# ERROR CONDITIONS: exit 1 ---- Invalid option					                #
-#                   exit 2 ----	Cannot find stated file/directory               #
-#                   exit 3 ----	git command failed				                #
-#                   exit 4 ----	Cannot change to neo4j directory		        #
-#                   exit 5 ----	make failed					                    #
-#                   exit 6 ----	make test failed				                #
-#                   exit 99 ---	killed by external forces			            #
-#										                                        #
-# DEVELOPER: Charles E. O'Riley Jr.							                    #
-# DEVELOPER PHONE: +1 (615) 983-1474						                    #
-# DEVELOPER EMAIL: ceoriley@gmail.com 					                        #
-#										                                        #
-# VERSION: 0.01.0								                                #
-# CREATED DATE-TIME: 20200305-15:02 Central Time Zone USA			            #
-#										                                        #
-# VERSION: 0.02.0								                                #
-# REVISION DATE-TIME: YYYYMMDD-HH:MM                                            *
-# DEVELOPER MAKING CHANGE: First_name Last_name					                #
-# DEVELOPER MAKING CHANGE: PHONE: +1 (XXX) XXX-XXXX				                #
-# DEVELOPER MAKING CHANGE: EMAIL: first.last@email.com				            #
-# REVISION MADE:                                                                *
+*********************************************************************************
+*                                                                               *
+* FILE: main.rs								                                    *
+*										                                        *
+* USAGE: neo4j [-h] 								                            *
+*										                                        *
+* DESCRIPTION: The haversine formula, an equation important in                  *
+*              navigation, is used here to determine the                        *
+*              distance between states in miles using                           *
+*              longitude and latitude.                                          *
+*                                                                               *
+* OPTIONS: List options for the script [-h]                                     *
+*                                                                               *
+* ERROR CONDITIONS: exit 1 ---- Invalid option                                  *
+*                   exit 2 ----	Cannot find stated file/directory               *
+*                   exit 3 ----	git command failed				                *
+*                   exit 4 ----	Cannot change to neo4j directory		        *
+*                   exit 5 ----	make failed					                    *
+*                   exit 6 ----	make test failed				                *
+*                   exit 99 ---	killed by external forces			            *
+*										                                        *
+* DEVELOPER: Charles E. O'Riley Jr.							                    *
+* DEVELOPER PHONE: +1 (615) 983-1474						                    *
+* DEVELOPER EMAIL: ceoriley@gmail.com 					                        *
+*										                                        *
+* VERSION: 0.01.0								                                *
+* CREATED DATE-TIME: 20200305-15:02 Central Time Zone USA			            *
+*										                                        *
+* VERSION: 0.02.0								                                *
+* REVISION DATE-TIME: YYYYMMDD-HH:MM                                            *
+* DEVELOPER MAKING CHANGE: First_name Last_name					                *
+* DEVELOPER MAKING CHANGE: PHONE: +1 (XXX) XXX-XXXX				                *
+* DEVELOPER MAKING CHANGE: EMAIL: first.last@email.com				            *
+* REVISION MADE:                                                                *
 * REVISION DATE-TIME: 20200520-17:00                                            *
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Added error checking and read and write                        *
 *                files from/to the base directory.                              *
-* REVISION DATE-TIME: 20200605-20:05                                            *
+* REVISION DATE-TIME: 20200603-20:05                                            *
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Moved the haversine_dist function to a                         *
-*                library.                                                       *                                                                              #
-#*******************************************************************************#
-#
+*                library.                                                       *
+* REVISION DATE-TIME: 20200604-20:25                                            *
+* Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
+* REVISION MADE: Added chrono crate to capture output.json                      *
+*                file creation.                                                 *                                                                                #
+*********************************************************************************
 */
 
 #[macro_use]
@@ -50,12 +53,15 @@ extern crate serde_derive;
 extern crate permutohedron;
 extern crate serde;
 extern crate serde_json;
-
 extern crate read_json;
+
+extern crate chrono;
 
 use serde_json::json;
 
 use std::{error::Error, f64, fs, fs::File, io::Read, string::String};
+
+use chrono::prelude::*;
 
 use permutohedron::Heap;
 
@@ -218,12 +224,15 @@ fn try_main() -> Result<(), Box<dyn Error>> {
     // Compute to 1 digit after decimal point for the output file.
     let d = (((d / km_to_mi) * 10.0).round() / 10.0).to_string();
 
+    let local: DateTime<Local> = Local::now();
+
     let obj = json!({
-        "from_state":from_state.to_string(),
-        "from_zipcode":from_zipcode,
-        "to_state":to_state.to_string(),
-        "to_zipcode":to_zipcode,
-        "distance":d,
+        "beginning_state":from_state.to_string(),
+        "beginning_zipcode":from_zipcode.to_string(),
+        "ending_state":to_state.to_string(),
+        "ending_zipcode":to_zipcode.to_string(),
+        "miles_between":d.to_string(),
+        "time_created":local
     });
 
     // Write output to file.
