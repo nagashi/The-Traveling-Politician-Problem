@@ -14,24 +14,24 @@
 *                                                                               *
 * ERROR CONDITIONS: exit 1 ---- Invalid option                                  *
 *                   exit 2 ----	Cannot find stated file/directory               *
-*                   exit 3 ----	git command failed				                *
-*                   exit 4 ----	Cannot change to neo4j directory		        *
-*                   exit 5 ----	make failed					                    *
-*                   exit 6 ----	make test failed				                *
-*                   exit 99 ---	killed by external forces			            *
-*										                                        *
-* DEVELOPER: Charles E. O'Riley Jr.							                    *
-* DEVELOPER PHONE: +1 (615) 983-1474						                    *
-* DEVELOPER EMAIL: ceoriley@gmail.com 					                        *
-*										                                        *
-* VERSION: 0.01.0								                                *
-* CREATED DATE-TIME: 20200305-15:02 Central Time Zone USA			            *
-*										                                        *
-* VERSION: 0.02.0								                                *
+*                   exit 3 ----	git command failed                              *
+*                   exit 4 ----	Cannot change to neo4j directory                *
+*                   exit 5 ----	make failed                                     *
+*                   exit 6 ----	make test failed                                *
+*                   exit 99 ---	killed by external forces                       *
+*                                                                               *
+* DEVELOPER: Charles E. O'Riley Jr.                                             *
+* DEVELOPER PHONE: +1 (615) 983-1474                                            *
+* DEVELOPER EMAIL: ceoriley@gmail.com                                           *
+*                                                                               *
+* VERSION: 0.01.0                                                               *
+* CREATED DATE-TIME: 20200305-15:02 Central Time Zone USA                       *
+*                                                                               *
+* VERSION: 0.02.0                                                               *
 * REVISION DATE-TIME: YYYYMMDD-HH:MM                                            *
-* DEVELOPER MAKING CHANGE: First_name Last_name					                *
-* DEVELOPER MAKING CHANGE: PHONE: +1 (XXX) XXX-XXXX				                *
-* DEVELOPER MAKING CHANGE: EMAIL: first.last@email.com				            *
+* DEVELOPER MAKING CHANGE: First_name Last_name                                 *
+* DEVELOPER MAKING CHANGE: PHONE: +1 (XXX) XXX-XXXX                             *
+* DEVELOPER MAKING CHANGE: EMAIL: first.last@email.com                          *
 * REVISION MADE:                                                                *
 * REVISION DATE-TIME: 20200520-17:00                                            *
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
@@ -53,7 +53,8 @@ extern crate serde_derive;
 extern crate permutohedron;
 extern crate serde;
 extern crate serde_json;
-extern crate read_json;
+
+extern crate read_json as rj;
 
 extern crate chrono;
 
@@ -91,11 +92,10 @@ struct ObjLookUp {
     population: String,
 }
 
-fn main() {
-    try_main().unwrap();
-}
+const IA: &str = "IA";
+const DC: &str = "DC";
 
-fn try_main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     // Read the input file to string.
     let file_states = File::open("states.json");
 
@@ -200,29 +200,19 @@ fn try_main() -> Result<(), Box<dyn Error>> {
             lon1 = data_look_up[x].longitude.parse().unwrap();
             lat1 = data_look_up[x].latitude.parse().unwrap();
             from_zipcode = data_look_up[x].zip_code.parse().unwrap();
-            println!("\n{} IA-lat1: {:#?} IA-lon1: {:#?}\n", x, lat1, lon1);
         }
         if data_look_up[x].state == to_state {
             lon2 = data_look_up[x].longitude.parse().unwrap();
             lat2 = data_look_up[x].latitude.parse().unwrap();
             to_zipcode = data_look_up[x].zip_code.parse().unwrap();
-            println!("{} DC-lat2: {:#?} DC-lon2: {:#?}\n", x, lat2, lon2);
         }
     }
-    // km_to_mi will be used to convert the
-    // default kilometers to miles.
-    let km_to_mi = 1.609344_f64;
-    let d: f64 = read_json::haversine_dist(lat1, lon1, lat2, lon2);
-    println!(
-        "Distance from {} to {}: {:.1} km, {:.1} mi \n",
-        from_state,
-        to_state,
-        d,
-        d / km_to_mi
-    );
 
-    // Compute to 1 digit after decimal point for the output file.
-    let d = (((d / km_to_mi) * 10.0).round() / 10.0).to_string();
+    let d: f64 = rj::gap::haversine_dist(lat1, lon1, lat2, lon2);
+    println!(
+        "Distance from {} to {}: {:.1} mi \n",
+        from_state, to_state, d
+    );
 
     let local: DateTime<Local> = Local::now();
 
@@ -249,44 +239,93 @@ fn try_main() -> Result<(), Box<dyn Error>> {
     // Haversine is finished
     // Permutation begins
 
-    let num = data_look_up.len() - 47; // Don't allow all 51 states to be permutated.
+    let num = data_look_up.len() - 47; // Don't allow all 51 entries to be permutated.
     let mut data = Vec::with_capacity(num);
 
     for x in 0..num {
-        if data_look_up[x].state != from_state && // omit Iowa && DC
-            data_look_up[x].state != to_state
+        if data_look_up[x].state != IA && // omit Iowa && DC
+            data_look_up[x].state != DC
         {
             data.push(&data_look_up[x].state);
         }
     }
 
     let heap = Heap::new(&mut data);
-    let mut i: u128 = 0;
     let mut perm = Vec::new();
+    let data_len = data_look_up.len();
+
+    let mut iv: i128 = 0;
 
     for data in heap {
+        let mut _lat1: f64 = 0.0;
+        let mut _lon1: f64 = 0.0;
+        let mut _lat2: f64 = 0.0;
+        let mut _lon2: f64 = 0.0;
+
+        let mut sum: f64 = 0.0;
+
         let nbr = data.len();
         for x in 0..nbr {
             let _c = data[x];
 
             if x == 0 {
+                sum = 0.0;
                 perm.clear();
-                let mut a = vec!["IA"];
+                let mut a = vec![IA];
                 perm.append(&mut a);
-                perm.push(_c);
+                perm.push(_c);                     
             } else if x == nbr - 1 {
                 perm.push(_c);
-                let mut b = vec!["DC"];
+                let mut b = vec![DC];
                 perm.append(&mut b);
             } else {
                 perm.push(_c);
             }
+
+            if perm[perm.len() - 1] == DC {
+                let numbr = perm.len();
+
+                for i in 1..numbr {
+                    if i > 0 {
+                        for ii in 0..data_len {
+                            if data_look_up[ii].state == perm[i - 1] {
+                                _lon1 = data_look_up[ii].longitude.parse().unwrap();
+                                _lat1 = data_look_up[ii].latitude.parse().unwrap();
+                            }
+
+                            if data_look_up[ii].state == perm[i] {
+                                _lon2 = data_look_up[ii].longitude.parse().unwrap();
+                                _lat2 = data_look_up[ii].latitude.parse().unwrap();
+                            }
+                        }
+
+                        let d2 = rj::gap::haversine_dist(_lat1, _lon1, _lat2, _lon2);
+                        sum += d2;
+                        sum = (sum * 10.0).round() / 10.0;
+
+                        println!(
+                            "\n #{:?} states1: {:?} states2: {:?} d2 {:?}  sum: {:?}\n",
+                            i,
+                            perm[i - 1],
+                            perm[i],
+                            d2,
+                            sum
+                        );
+                    }
+                }
+            }
         }
 
-        i += 1;
-        println!("\n#{:?}: {:?} {:?}", i, data, &perm);
-    }
+        {
+            iv += 1;
+            let s = format!("{:.1}", sum);
+            let s: &'static str = rj::gap::string_to_static_str(s);
+            let mut s = vec![s];
+            perm.append(&mut s);
 
+            println!("{:?}) {:?}   {:?}\n", iv, &data, &perm);
+        }
+    }
     // catch any '?' try_catch errors.
     Ok(())
 }
