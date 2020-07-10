@@ -3,7 +3,7 @@
 *                                                                               *
 * FILE: main.rs								                                    *
 *										                                        *
-* USAGE: neo4j [-h] 								                            *
+* USAGE: redis [-h] 								                            *
 *										                                        *
 * DESCRIPTION: The haversine formula, an equation important in                  *
 *              navigation, is used here to determine the                        *
@@ -44,7 +44,9 @@
 * REVISION DATE-TIME: 20200604-20:25                                            *
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Added chrono crate to capture output.json                      *
-*                file creation.                                                 *                                                                                #
+*                file creation.                                                 *
+* REVISION DATE-TIME: 20200709-20:34                                            *
+* REVISION MADE: Modified Readme.md file                                        *                                                                                #
 *********************************************************************************
 */
 

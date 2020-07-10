@@ -12,10 +12,9 @@ Value of 49!, i.e. factorial of 49 = 608,281,864,034,267,560,872,252,163,321,295
 One particular mistake is very easy to make here: why not just find the shortest path from the capital of Iowa to any other one state capital, then take the shortest path from there to any other one state capital, and then keep going until you wind up in D.C.? This could possibly give you a better solution than trillions of trillions of other solutions, but it’s unlikely to give you the very best overall path to D.C. For example, let’s say we only visit Texas and California in the middle: the distance from Iowa to Texas is shorter than the distance from Iowa to California, so you go to Texas first and then to California and then to D.C. This is around 5,300 miles. It’s longer to go to California first than to Texas, but if you visit California first, then Texas, then D.C., you get around 4,900 miles, which is the shorter path. As you can see, finding the shortest distance from one capital to another at any given point is not necessarily going to give you the shortest overall path to visit each capital only once. 
 
 This problem is based on the *“Traveling Salesman Problem”*, which is a well-known graph theory problem that has been heavily studied by mathematicians. Many resources are available to study this problem under the title “Traveling Salesman Problem”.
-
 https://en.wikipedia.org/wiki/Travelling_salesman_problem
 
-The Traveling Politician Project is being written in various programming languages.  I elected to pursue this project using the **Rust language**.
+The Traveling Politician Project is being written in various programming languages: Python, Elixr, C++, and Haskell. I desired to learn a new programming language so I'm pursuing this project using **Rust**. ![SCREENSHOT](./image/rust.png)
 
 **MacBook Pro**
 <ul>
