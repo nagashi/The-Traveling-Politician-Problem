@@ -1,10 +1,10 @@
 /*
 *********************************************************************************
 *                                                                               *
-* FILE: main.rs								                                    *
-*										                                        *
-* USAGE: redis [-h] 								                            *
-*										                                        *
+* FILE: main.rs                                                                 *
+*                                                                               *
+* USAGE: redis [-h]                                                             *
+*                                                                               *
 * DESCRIPTION: The haversine formula, an equation important in                  *
 *              navigation, is used here to determine the                        *
 *              distance between states in miles using                           *
