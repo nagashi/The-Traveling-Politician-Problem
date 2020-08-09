@@ -1,4 +1,4 @@
-# The Traveling Politician Problem                                                      
+# The Traveling Politician Problem ![SCREENSHOT](./image/traveling_politician.gif)                                                      
 
 ## Advisor: Verbus M. Counts - CEO of EMR Technical Solutions https://emrts.us/
 #### Interns: Trent Rogers, Kranthi Raj Vellanki, Ember Carpenter, Charles O'Riley

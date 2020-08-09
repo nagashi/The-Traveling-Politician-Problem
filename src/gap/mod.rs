@@ -13,6 +13,7 @@ pub fn haversine_dist(mut th1: f64, mut ph1: f64, mut th2: f64, ph2: f64) -> f64
     d // To be returned
 }
 
+// Convert String to static str.
 pub fn string_to_static_str(s: String) -> &'static str {
     Box::leak(s.into_boxed_str())
 }
