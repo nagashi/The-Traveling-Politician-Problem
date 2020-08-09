@@ -1,0 +1,461 @@
+[
+  {
+    "zip_code": "50319",
+    "city": "DES MOINES",
+    "state": "IA",
+    "latitude": "41.6006",
+    "longitude": "-93.6087",
+    "classification": "",
+    "population": "0"
+  },
+  {
+    "zip_code": "12224",
+    "city": "ALBANY",
+    "state": "NY",
+    "latitude": "42.6525",
+    "longitude": "-73.7567",
+    "classification": "P",
+    "population": "0"
+  },
+  {
+    "zip_code": "53703",
+    "city": "MADISON",
+    "state": "WI",
+    "latitude": "43.0707",
+    "longitude": "-89.3757",
+    "classification": "",
+    "population": "27958"
+  },
+  {
+    "zip_code": "78701",
+    "city": "AUSTIN",
+    "state": "TX",
+    "latitude": "30.2672",
+    "longitude": "-97.7423",
+    "classification": "",
+    "population": "6841"
+  },
+  {
+    "zip_code": "95814",
+    "city": "SACRAMENTO",
+    "state": "CA",
+    "latitude": "38.5817",
+    "longitude": "-121.4959",
+    "classification": "",
+    "population": "9922"
+  },
+  {
+    "zip_code": "37243",
+    "city": "NASHVILLE",
+    "state": "TN",
+    "latitude": "36.1623",
+    "longitude": "-86.7847",
+    "classification": "U",
+    "population": "0"
+  },
+  {
+    "zip_code": "23218",
+    "city": "RICHMOND",
+    "state": "VA",
+    "latitude": "37.5539",
+    "longitude": "-77.4608",
+    "classification": "P",
+    "population": "0"
+  },
+  {
+    "zip_code": "06106",
+    "city": "HARTFORD",
+    "state": "CT",
+    "latitude": "41.7450",
+    "longitude": "-72.6857",
+    "classification": "",
+    "population": "39902"
+  },
+  {
+    "zip_code": "97301",
+    "city": "SALEM",
+    "state": "OR",
+    "latitude": "44.9586",
+    "longitude": "-123.0026",
+    "classification": "",
+    "population": "53518"
+  },
+  {
+    "zip_code": "70802",
+    "city": "BATON ROUGE",
+    "state": "LA",
+    "latitude": "30.4425",
+    "longitude": "-91.1694",
+    "classification": "",
+    "population": "27267"
+  },
+  {
+    "zip_code": "59601",
+    "city": "HELENA",
+    "state": "MT",
+    "latitude": "46.5290",
+    "longitude": "-112.1225",
+    "classification": "",
+    "population": "29283"
+  },
+  {
+    "zip_code": "25305",
+    "city": "CHARLESTON",
+    "state": "WV",
+    "latitude": "38.3365",
+    "longitude": "-81.6104",
+    "classification": "",
+    "population": "0"
+  },
+  {
+    "zip_code": "62756",
+    "city": "SPRINGFIELD",
+    "state": "IL",
+    "latitude": "39.8018",
+    "longitude": "-89.6436",
+    "classification": "U",
+    "population": "0"
+  },
+  {
+    "zip_code": "87501",
+    "city": "SANTA FE",
+    "state": "NM",
+    "latitude": "35.7091",
+    "longitude": "-105.8594",
+    "classification": "",
+    "population": "15147"
+  },
+  {
+    "zip_code": "58505",
+    "city": "BISMARCK",
+    "state": "ND",
+    "latitude": "46.8201",
+    "longitude": "-100.7801",
+    "classification": "",
+    "population": "2"
+  },
+  {
+    "zip_code": "85007",
+    "city": "PHOENIX",
+    "state": "AZ",
+    "latitude": "33.4459",
+    "longitude": "-112.0912",
+    "classification": "",
+    "population": "14040"
+  },
+  {
+    "zip_code": "55155",
+    "city": "SAINT PAUL",
+    "state": "MN",
+    "latitude": "44.9445",
+    "longitude": "-93.0932",
+    "classification": "U",
+    "population": "0"
+  },
+  {
+    "zip_code": "98504",
+    "city": "OLYMPIA",
+    "state": "WA",
+    "latitude": "47.0442",
+    "longitude": "-122.9007",
+    "classification": "U",
+    "population": "0"
+  },
+  {
+    "zip_code": "40601",
+    "city": "FRANKFORT",
+    "state": "KY",
+    "latitude": "38.2326",
+    "longitude": "-84.8983",
+    "classification": "",
+    "population": "49566"
+  },
+  {
+    "zip_code": "83702",
+    "city": "BOISE",
+    "state": "ID",
+    "latitude": "43.6645",
+    "longitude": "-116.1646",
+    "classification": "",
+    "population": "22293"
+  },
+  {
+    "zip_code": "80203",
+    "city": "DENVER",
+    "state": "CO",
+    "latitude": "39.7320",
+    "longitude": "-104.9825",
+    "classification": "",
+    "population": "18839"
+  },
+  {
+    "zip_code": "84103",
+    "city": "SALT LAKE city",
+    "state": "UT",
+    "latitude": "40.7864",
+    "longitude": "-111.8689",
+    "classification": "",
+    "population": "21084"
+  },
+  {
+    "zip_code": "68508",
+    "city": "LINCOLN",
+    "state": "NE",
+    "latitude": "40.8179",
+    "longitude": "-96.7090",
+    "classification": "",
+    "population": "14475"
+  },
+  {
+    "zip_code": "73105",
+    "city": "OKLAHOMA city",
+    "state": "OK",
+    "latitude": "35.5183",
+    "longitude": "-97.5041",
+    "classification": "",
+    "population": "5210"
+  },
+  {
+    "zip_code": "82001",
+    "city": "CHEYENNE",
+    "state": "WY",
+    "latitude": "41.1418",
+    "longitude": "-104.7792",
+    "classification": "",
+    "population": "35484"
+  },
+  {
+    "zip_code": "65101",
+    "city": "JEFFERSON city",
+    "state": "MO",
+    "latitude": "38.4834",
+    "longitude": "-92.1239",
+    "classification": "",
+    "population": "30587"
+  },
+  {
+    "zip_code": "30334",
+    "city": "ATLANTA",
+    "state": "GA",
+    "latitude": "33.7487",
+    "longitude": "-84.3874",
+    "classification": "",
+    "population": "1"
+  },
+  {
+    "zip_code": "48933",
+    "city": "LANSING",
+    "state": "MI",
+    "latitude": "42.7314",
+    "longitude": "-84.5539",
+    "classification": "",
+    "population": "2530"
+  },
+  {
+    "zip_code": "36104",
+    "city": "MONTGOMERY",
+    "state": "AL",
+    "latitude": "32.3925",
+    "longitude": "-86.3288",
+    "classification": "",
+    "population": "9468"
+  },
+  {
+    "zip_code": "32399",
+    "city": "TALLAHASSEE",
+    "state": "FL",
+    "latitude": "30.4197",
+    "longitude": "-84.2333",
+    "classification": "U",
+    "population": "2"
+  },
+  {
+    "zip_code": "66612",
+    "city": "TOPEKA",
+    "state": "KS",
+    "latitude": "39.0407",
+    "longitude": "-95.6793",
+    "classification": "",
+    "population": "2477"
+  },
+  {
+    "zip_code": "57501",
+    "city": "PIERRE",
+    "state": "SD",
+    "latitude": "44.5671",
+    "longitude": "-100.2672",
+    "classification": "",
+    "population": "16309"
+  },
+  {
+    "zip_code": "27601",
+    "city": "RALEIGH",
+    "state": "NC",
+    "latitude": "35.7752",
+    "longitude": "-78.6343",
+    "classification": "",
+    "population": "9450"
+  },
+  {
+    "zip_code": "99801",
+    "city": "JUNEAU",
+    "state": "AK",
+    "latitude": "58.3801",
+    "longitude": "-134.1775",
+    "classification": "",
+    "population": "29164"
+  },
+  {
+    "zip_code": "06103",
+    "city": "HARTFORD",
+    "state": "CT",
+    "latitude": "41.7652",
+    "longitude": "-72.6720",
+    "classification": "",
+    "population": "1410"
+  },
+  {
+    "zip_code": "19901",
+    "city": "DOVER",
+    "state": "DE",
+    "latitude": "39.1576",
+    "longitude": "-75.4940",
+    "classification": "",
+    "population": "35055"
+  },
+  {
+    "zip_code": "96813",
+    "city": "HONOLULU",
+    "state": "HI",
+    "latitude": "21.3286",
+    "longitude": "-157.8286",
+    "classification": "",
+    "population": "22881"
+  },
+  {
+    "zip_code": "46204",
+    "city": "INDIANAPOLIS",
+    "state": "IN",
+    "latitude": "39.7728",
+    "longitude": "-86.1594",
+    "classification": "",
+    "population": "5125"
+  },
+  {
+    "zip_code": "04330",
+    "city": "AUGUSTA",
+    "state": "ME",
+    "latitude": "44.3788",
+    "longitude": "-69.7310",
+    "classification": "",
+    "population": "26086"
+  },
+  {
+    "zip_code": "21401",
+    "city": "ANNAPOLIS",
+    "state": "MD",
+    "latitude": "38.9934",
+    "longitude": "-76.5470",
+    "classification": "",
+    "population": "36012"
+  },
+  {
+    "zip_code": "02133",
+    "city": "BOSTON",
+    "state": "MA",
+    "latitude": "42.3572",
+    "longitude": "-71.0796",
+    "classification": "",
+    "population": "0"
+  },
+  {
+    "zip_code": "39201",
+    "city": "JACKSON",
+    "state": "MS",
+    "latitude": "32.2889",
+    "longitude": "-90.1843",
+    "classification": "",
+    "population": "536"
+  },
+  {
+    "zip_code": "89701",
+    "city": "CARSON city",
+    "state": "NV",
+    "latitude": "39.1484",
+    "longitude": "-119.6629",
+    "classification": "",
+    "population": "27625"
+  },
+  {
+    "zip_code": "03303",
+    "city": "CONCORD",
+    "state": "NH",
+    "latitude": "43.3014",
+    "longitude": "-71.6778",
+    "classification": "",
+    "population": "15524"
+  },
+  {
+    "zip_code": "08608",
+    "city": "TRENTON",
+    "state": "NJ",
+    "latitude": "40.2188",
+    "longitude": "-74.7668",
+    "classification": "",
+    "population": "983"
+  },
+  {
+    "zip_code": "43215",
+    "city": "COLUMBUS",
+    "state": "OH",
+    "latitude": "39.9687",
+    "longitude": "-83.0257",
+    "classification": "",
+    "population": "12790"
+  },
+  {
+    "zip_code": "17120",
+    "city": "HARRISBURG",
+    "state": "PA",
+    "latitude": "40.2682",
+    "longitude": "-76.8822",
+    "classification": "U",
+    "population": "0"
+  },
+  {
+    "zip_code": "02903",
+    "city": "PROVIDENCE",
+    "state": "RI",
+    "latitude": "41.8182",
+    "longitude": "-71.4097",
+    "classification": "",
+    "population": "10780"
+  },
+  {
+    "zip_code": "29208",
+    "city": "COLUMBIA",
+    "state": "SC",
+    "latitude": "33.9984",
+    "longitude": "-81.0280",
+    "classification": "U",
+    "population": "695"
+  },
+  {
+    "zip_code": "05633",
+    "city": "MONTPELIER",
+    "state": "VT",
+    "latitude": "44.2601",
+    "longitude": "-72.5759",
+    "classification": "U",
+    "population": "0"
+  },
+  {
+    "zip_code": "20500",
+    "city": "WASHINGTON",
+    "state": "DC",
+    "latitude": "38.8926",
+    "longitude": "-77.0360",
+    "classification": "",
+    "population": "0"
+  }
+]
