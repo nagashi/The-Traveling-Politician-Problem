@@ -1,4 +1,4 @@
- ### Verbus M. Counts: CEO of [EMR Technical Solutions](https://emrts.us/)
+### Verbus M. Counts: CEO of [EMR Technical Solutions](https://emrts.us/)
 #### Advisor: Charles E. O'Riley Jr.
 #### Interns: Trent Rogers, Kranthi Raj Vellanki, Ember Carpenter
 
