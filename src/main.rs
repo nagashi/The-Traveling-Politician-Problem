@@ -98,7 +98,6 @@ const IA: &str = "IA";
 const DC: &str = "DC";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    
     // Begin app begin time
     let start_time = Local::now().time();
 
@@ -132,13 +131,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .appender("stderr")
                 .build(LevelFilter::Trace),
         );
-        //.unwrap(); Commented due to
-        // implementation of error check
+    //.unwrap(); Commented due to
+    // implementation of error check
 
-        // Errorcheck for log/path.log
+    // Errorcheck for log/path.log
     let config = match config {
         Ok(config) => {
-            info!("SUCCESS created log/path.log: {:?}", config);
             config
         } // Use content when implementing logging.
         Err(error) => {
@@ -329,7 +327,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "time_created":dt
     });
     trace!("Initialize json object: {:?}", &obj);
-
+  
     // Write output to file.
     let f = fs::write("output.json", serde_json::to_string_pretty(&obj).unwrap());
     // Error check for writing file
@@ -455,8 +453,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // End timing
     info!("***** END APP: {:?} *****", end_time);
-
-    info!("diff {:?}", diff.num_seconds());
 
     info!(
         "Total run time: {:?} hour(s), {:?} minute(s), {:?} second(s), {:?} millisecond(s), {:?} microsecond(s)",

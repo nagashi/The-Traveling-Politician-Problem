@@ -20,3 +20,18 @@ The Traveling Politician Project is being written in various programming languag
 <li>Processor 2.9 GHz 6-core Intel Core i9</li>
 <li>Memory 32 GB 2400 MHz DDR4</li>
 </ul>
+
+
+## Support
+
+Bug reports and feature requests can be filed for the Traveling Politician Problem project here:
+
+- [File Bug Reports and Features](https://github.com/nagashi/The-Traveling-Politician-Problem/issues)
+
+## License
+
+Traveling Politician Problem is released under the [MIT license](https://mit-license.org).
+
+## Copyright
+
+copyright:: (c) Copyright 2020 Charles O'Riley. All Rights Reserved.
