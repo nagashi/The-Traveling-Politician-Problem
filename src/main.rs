@@ -48,12 +48,16 @@
 * REVISION DATE-TIME: 20200709-20:34                                            *
 * REVISION MADE: Modified Readme.md file                                        *
 * REVISION DATE-TIME: 20200809-13:00                                            *
-* REVISION MADE: Added logging functionality                                    *                                                                                #
+* REVISION MADE: Added logging functionality                                    *
+* REVISION DATE-TIME: 20200909-13:41                                            *
+* REVISION MADE: Added functionality for csv                                    *
+*                file creation & modified module names.                         *                                                                                  #
 *********************************************************************************
 */
 
 #[macro_use]
 extern crate serde_derive;
+extern crate csv;
 extern crate permutohedron;
 extern crate serde;
 extern crate serde_json;
@@ -63,6 +67,7 @@ extern crate read_json as rj;
 extern crate chrono;
 
 use chrono::prelude::*;
+use csv::Writer;
 use log::{debug, error, info, trace, warn, LevelFilter};
 use log4rs::{
     append::{
@@ -75,7 +80,12 @@ use log4rs::{
 };
 use permutohedron::Heap;
 use serde_json::json;
-use std::{f64, fs, fs::File, io::Read, string::String};
+use std::{
+    f64, fs,
+    fs::{File, OpenOptions},
+    io::Read,
+    string::String,
+};
 
 #[derive(Deserialize, Debug)]
 struct ObjStates {
@@ -96,6 +106,9 @@ struct ObjLookUp {
 
 const IA: &str = "IA";
 const DC: &str = "DC";
+
+use rj::distance::haversine_dist as distance;
+use rj::stss::string_to_static_str;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Begin app begin time
@@ -136,9 +149,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Errorcheck for log/path.log
     let config = match config {
-        Ok(config) => {
-            config
-        } // Use content when implementing logging.
+        Ok(config) => config, // Use content when implementing logging.
         Err(error) => {
             let msg = "FAILED created log/path.log";
             error!("{:?}: {:?}", msg, error);
@@ -310,7 +321,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    let d: f64 = rj::gap::haversine_dist(lat1, lon1, lat2, lon2);
+    let d: f64 = distance(lat1, lon1, lat2, lon2);
     info!(
         "json object: Distance from {} to {}: {:.1} mi ",
         from_state, to_state, d
@@ -327,7 +338,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "time_created":dt
     });
     trace!("Initialize json object: {:?}", &obj);
-  
+
     // Write output to file.
     let f = fs::write("output.json", serde_json::to_string_pretty(&obj).unwrap());
     // Error check for writing file
@@ -347,7 +358,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Haversine is finished
     // Permutation begins
 
-    let num = data_look_up.len() - 45; // Don't allow all 51 entries to be permutated.
+    let num = data_look_up.len() - 47; // Don't allow all 51 entries to be permutated.
     let mut data = Vec::with_capacity(num);
     info!("Number of states to iterate through w/o IA & DC: {:?}", num);
 
@@ -363,7 +374,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut perm = Vec::new();
     let data_len = data_look_up.len();
 
-    let mut iv: i128 = 0;
+    let mut iv: isize = 0;
 
     for data in heap {
         info!("Begin outer loop for heap");
@@ -384,20 +395,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             if x == 0 {
                 sum = 0.0;
-                // new vector. clear past entries
+                // empty vector. clear past entries
                 perm.clear();
                 let mut a = vec![IA];
                 perm.append(&mut a);
                 perm.push(_c);
-            //debug!("perm x == 0: {:?}", perm);
             } else if x == nbr - 1 {
                 perm.push(_c);
                 let mut b = vec![DC];
                 perm.append(&mut b);
-            //debug!("perm x == nbr - 1: {:?}", perm);
             } else {
                 perm.push(_c);
-                //debug!("perm else: {:?}", perm);
             }
 
             if perm[perm.len() - 1] == DC {
@@ -406,6 +414,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for i in 1..numbr {
                     if i > 0 {
                         for ii in 0..data_len {
+                            // Shift left to get previous value.
                             if data_look_up[ii].state == perm[i - 1] {
                                 _lon1 = data_look_up[ii].longitude.parse().unwrap();
                                 _lat1 = data_look_up[ii].latitude.parse().unwrap();
@@ -417,7 +426,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             }
                         }
 
-                        let d2 = rj::gap::haversine_dist(_lat1, _lon1, _lat2, _lon2);
+                        let d2 = distance(_lat1, _lon1, _lat2, _lon2);
                         sum += d2;
                         sum = (sum * 10.0).round() / 10.0;
 
@@ -436,13 +445,52 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         {
             iv += 1;
+            let mut vec: Vec<&str> = Vec::new();
+            let q = format!("{:?}", iv);
             let s = format!("{:.1}", sum);
-            let s: &'static str = rj::gap::string_to_static_str(s);
-            let mut s = vec![s];
-            perm.append(&mut s);
+            let q: &'static str = string_to_static_str(q);
+            let s: &'static str = string_to_static_str(s);
+            vec.push(q);
+            vec.append(&mut perm);
+            vec.push(s);
 
-            debug!("{:?}) {:?}", iv, &perm);
-            //debug!("{:?}) {:?}   {:?}", iv, &data, &perm);
+            debug!("{:?}) {:?} ", iv, &vec);
+
+            let file = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .append(true)
+                .open("cypher.csv")
+                .unwrap();
+
+            let mut wtr = Writer::from_writer(file);
+
+            let vec_len = vec.len();
+            let mut header: Vec<String> = Vec::new();
+
+            if iv == 1 {
+                for i in 0..vec_len {
+                    if i == 0 {
+                        header.push("KEY".to_owned())
+                    } else if i == vec_len - 1 {
+                        header.push("DISTANCE".to_owned())
+                    } else {
+                        let mut a: String = "STATE_".to_owned();
+                        let b: usize = i;
+                        let b: String = b.to_string();
+                        let b: &'static str = string_to_static_str(b);
+                        a.push_str(b);
+                        header.push(a);
+                    }
+                }
+                if let Err(e) = wtr.write_record(header) {
+                    error!("Couldn't write to CSV file: {:?}", e);
+                }
+            }
+
+            if let Err(e) = wtr.write_record(vec) {
+                error!("Couldn't write to CSV file: {:?}", e);
+            }
         }
     }
 
