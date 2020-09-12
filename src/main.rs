@@ -51,7 +51,11 @@
 * REVISION MADE: Added logging functionality                                    *
 * REVISION DATE-TIME: 20200909-13:41                                            *
 * REVISION MADE: Added functionality for csv                                    *
-*                file creation & modified module names.                         *                                                                                  #
+*                file creation & modified module names.                         *
+* REVISION DATE-TIME: 20200911-21:32                                            *
+* Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
+* REVISION MADE: Converted procedural code to functions and                     *
+*                placed in module                                               *                                                                                  #
 *********************************************************************************
 */
 
@@ -87,6 +91,11 @@ use std::{
     string::String,
 };
 
+use rj::{
+    distance::haversine_dist as distance,
+    stss::{title, vec_row},
+};
+
 #[derive(Deserialize, Debug)]
 struct ObjStates {
     from_state: String,
@@ -106,9 +115,6 @@ struct ObjLookUp {
 
 const IA: &str = "IA";
 const DC: &str = "DC";
-
-use rj::distance::haversine_dist as distance;
-use rj::stss::string_to_static_str;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Begin app begin time
@@ -358,7 +364,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Haversine is finished
     // Permutation begins
 
-    let num = data_look_up.len() - 47; // Don't allow all 51 entries to be permutated.
+    let num = data_look_up.len() - 45; // Don't allow all 51 entries to be permutated.
     let mut data = Vec::with_capacity(num);
     info!("Number of states to iterate through w/o IA & DC: {:?}", num);
 
@@ -371,7 +377,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let heap = Heap::new(&mut data);
-    let mut perm = Vec::new();
+    let mut perm: Vec<&str> = Vec::new();
     let data_len = data_look_up.len();
 
     let mut iv: isize = 0;
@@ -444,18 +450,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         {
-            iv += 1;
-            let mut vec: Vec<&str> = Vec::new();
-            let q = format!("{:?}", iv);
-            let s = format!("{:.1}", sum);
-            let q: &'static str = string_to_static_str(q);
-            let s: &'static str = string_to_static_str(s);
-            vec.push(q);
-            vec.append(&mut perm);
-            vec.push(s);
-
-            debug!("{:?}) {:?} ", iv, &vec);
-
             let file = OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -465,31 +459,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let mut wtr = Writer::from_writer(file);
 
+            iv += 1;
+
+            let vec = vec_row(iv, sum, perm.to_owned()); // module function
             let vec_len = vec.len();
-            let mut header: Vec<String> = Vec::new();
 
             if iv == 1 {
-                for i in 0..vec_len {
-                    if i == 0 {
-                        header.push("KEY".to_owned())
-                    } else if i == vec_len - 1 {
-                        header.push("DISTANCE".to_owned())
-                    } else {
-                        let mut a: String = "STATE_".to_owned();
-                        let b: usize = i;
-                        let b: String = b.to_string();
-                        let b: &'static str = string_to_static_str(b);
-                        a.push_str(b);
-                        header.push(a);
-                    }
-                }
+                let header: Vec<String> = title(vec_len); //module function
+
                 if let Err(e) = wtr.write_record(header) {
-                    error!("Couldn't write to CSV file: {:?}", e);
+                    error!("Couldn't write header to CSV file: {:?}", e);
                 }
             }
 
             if let Err(e) = wtr.write_record(vec) {
-                error!("Couldn't write to CSV file: {:?}", e);
+                error!("Couldn't write row to CSV file: {:?}", e);
             }
         }
     }
