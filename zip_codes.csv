@@ -49,4 +49,4 @@ zip_code,City,State,Latitude,Longitude,Classification,Population
 "02903","PROVIDENCE","RI","41.8182","-71.4097","","10780"
 "29208","COLUMBIA","SC","33.9984","-81.0280","U","695"
 "05633","MONTPELIER","VT","44.2601","-72.5759","U","0"
-"20004","WASHINGTON","DC","38.8924","-77.0206","","1622"
+"20004","WASHINGTON","DC","38.8924","-77.0206","'","1622"
