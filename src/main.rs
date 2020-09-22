@@ -226,7 +226,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let data_states: Vec<ObjStates> = serde_json::from_str(&contents_states)?;
 
     // Error check for deserializing file
-    match &data_states.len() > &0 {
+    match !data_states.is_empty() {
         true => {
             let msg = "Success deserialized data_states";
             info!("{:?}: {:?}", msg, &data_states);
@@ -242,7 +242,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let from_state: &str = &data_states[0].from_state;
     let to_state: &str = &data_states[0].to_state;
 
-    match from_state.len() > 0 && to_state.len() > 0 {
+    match !from_state.is_empty() && !to_state.is_empty() {
         true => {
             info!(
                 "Success: from_state: {:?} to_state: {:?} ",
@@ -299,7 +299,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let num = || data_look_up.len();
+    let num = data_look_up.len();
 
     // Initialize these values so that they'll be
     // in scope for the haversine_dist function
@@ -312,7 +312,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("Initialize variables for output.json");
 
     // Loop through lookup file to verify input.
-    for x in 0..num() {
+    for x in 0..num {
         match &data_look_up[x].state {
             // unreachable pattern so impose a guard
             a if a == from_state => {
@@ -384,9 +384,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let obj = json!({
         "beginning_state":from_state.to_string(),
-        "beginning_zipcode":from_zipcode.to_string(),
+        "beginning_zipcode":from_zipcode,
         "ending_state":to_state.to_string(),
-        "ending_zipcode":to_zipcode.to_string(),
+        "ending_zipcode":to_zipcode,
         "miles_between":d.to_string(),
         "time_created":dt
     });
@@ -408,18 +408,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         },
     );
-
+    
     // Haversine is finished
     // Permutation begins
 
-    let num = || data_look_up.len() - 46; // Don't allow all 51 entries to be permutated.
-    let mut data = Vec::with_capacity(num());
-    debug!(
-        "Number of states to iterate through w/o IA & DC: {:?}",
-        num()
-    );
+    let num = data_look_up.len() - 46; // Don't allow all 51 entries to be permutated.
+    let mut data = Vec::with_capacity(num);
+    debug!("Number of states to iterate through w/o IA & DC: {:?}", num);
 
-    for x in 0..num() {
+    for x in 0..num {
         match data_look_up[x].state != IA && // omit Iowa && DC
                 data_look_up[x].state != DC
         {
@@ -432,9 +429,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut perm: Vec<&str> = Vec::new();
     let data_len = data_look_up.len();
 
-    let mut iv: isize = 0;
-
-    for data in heap {
+    for (iv, data) in heap.enumerate() {
         info!("Begin outer loop for heap");
         let mut _lat1: f64 = 0.0;
         let mut _lon1: f64 = 0.0;
@@ -480,81 +475,76 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // longitute and latitude of eadh
             // state in the vector to compute
             // final distance
-            match perm[perm.len() - 1] {
-                DC => {
-                    let numbr = perm.len();
+            if let DC = perm[perm.len() - 1] {
+                let numbr = perm.len();
 
-                    for i in 1..numbr {
-                        match i {
-                            // match guard for
-                            // the expression
-                            a if a > 0 => {
-                                for ii in 0..data_len {
-                                    match &data_look_up[ii].state {
-                                        // Shift left to get previous value.
-                                        a if a == perm[i - 1] => {
-                                            // extract & error check longitude & latitude
-                                            _lon1 = match data_look_up[ii].longitude.parse::<f64>()
-                                            {
-                                                Ok(_lon1) => _lon1,
-                                                Err(e) => {
-                                                    let msg = "Error converting _lon1 to f64";
-                                                    error!("{:?}: {:?}", msg, e);
-                                                    panic!("{:?}: {:?}", msg, e);
-                                                }
-                                            };
+                for i in 1..numbr {
+                    match i {
+                        // match guard for
+                        // the expression
+                        a if a > 0 => {
+                            for ii in 0..data_len {
+                                match &data_look_up[ii].state {
+                                    // Shift left to get previous value.
+                                    a if a == perm[i - 1] => {
+                                        // extract & error check longitude & latitude
+                                        _lon1 = match data_look_up[ii].longitude.parse::<f64>() {
+                                            Ok(_lon1) => _lon1,
+                                            Err(e) => {
+                                                let msg = "Error converting _lon1 to f64";
+                                                error!("{:?}: {:?}", msg, e);
+                                                panic!("{:?}: {:?}", msg, e);
+                                            }
+                                        };
 
-                                            _lat1 = match data_look_up[ii].latitude.parse::<f64>() {
-                                                Ok(_lat1) => _lat1,
-                                                Err(e) => {
-                                                    let msg = "Error converting _lat1 to f64";
-                                                    error!("{:?}: {:?}", msg, e);
-                                                    panic!("{:?}: {:?}", msg, e);
-                                                }
-                                            };
-                                        }
-                                        b if b == perm[i] => {
-                                            _lon2 = match data_look_up[ii].longitude.parse::<f64>()
-                                            {
-                                                Ok(_lon2) => _lon2,
-                                                Err(e) => {
-                                                    let msg = "Error converting _lon2 to f64";
-                                                    error!("{:?}: {:?}", msg, e);
-                                                    panic!("{:?}: {:?}", msg, e);
-                                                }
-                                            };
-                                            _lat2 = match data_look_up[ii].latitude.parse::<f64>() {
-                                                Ok(_lat2) => _lat2,
-                                                Err(e) => {
-                                                    let msg = "Error converting _lat2 to f64";
-                                                    error!("{:?}: {:?}", msg, e);
-                                                    panic!("{:?}: {:?}", msg, e);
-                                                }
-                                            };
-                                        }
-                                        _ => {}
+                                        _lat1 = match data_look_up[ii].latitude.parse::<f64>() {
+                                            Ok(_lat1) => _lat1,
+                                            Err(e) => {
+                                                let msg = "Error converting _lat1 to f64";
+                                                error!("{:?}: {:?}", msg, e);
+                                                panic!("{:?}: {:?}", msg, e);
+                                            }
+                                        };
                                     }
+                                    b if b == perm[i] => {
+                                        _lon2 = match data_look_up[ii].longitude.parse::<f64>() {
+                                            Ok(_lon2) => _lon2,
+                                            Err(e) => {
+                                                let msg = "Error converting _lon2 to f64";
+                                                error!("{:?}: {:?}", msg, e);
+                                                panic!("{:?}: {:?}", msg, e);
+                                            }
+                                        };
+                                        _lat2 = match data_look_up[ii].latitude.parse::<f64>() {
+                                            Ok(_lat2) => _lat2,
+                                            Err(e) => {
+                                                let msg = "Error converting _lat2 to f64";
+                                                error!("{:?}: {:?}", msg, e);
+                                                panic!("{:?}: {:?}", msg, e);
+                                            }
+                                        };
+                                    }
+                                    _ => {}
                                 }
-
-                                let d2 = distance(_lat1, _lon1, _lat2, _lon2); // mod function
-                                sum += d2; // sum up distance from one state to the next
-                                           // within the vector
-                                sum = (sum * 10.0).round() / 10.0; // compute to 1 digit
-
-                                debug!(
-                                    "#{:?} states1: {:?} states2: {:?} d2 {:?}  sum: {:?}",
-                                    i,
-                                    perm[i - 1],
-                                    perm[i],
-                                    d2,
-                                    sum
-                                );
                             }
-                            _ => {}
+
+                            let d2 = distance(_lat1, _lon1, _lat2, _lon2); // mod function
+                            sum += d2; // sum up distance from one state to the next
+                                       // within the vector
+                            sum = (sum * 10.0).round() / 10.0; // compute to 1 digit
+
+                            debug!(
+                                "#{:?} states1: {:?} states2: {:?} d2 {:?}  sum: {:?}",
+                                i,
+                                perm[i - 1],
+                                perm[i],
+                                d2,
+                                sum
+                            );
                         }
+                        _ => {}
                     }
                 }
-                _ => {}
             }
         }
 
@@ -572,7 +562,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             panic!("{:?}: {:?}", msg, error);
                         }
                     };
-
                     path_csv
                 }
                 Err(error) => {
@@ -586,11 +575,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             path_csv.push_str("/cypher.csv");
 
             // determine if the file exists
-            let boolean = path_exists(path_csv.as_str()); // mod function
+            let true_false = path_exists(path_csv.as_str()); // mod function
 
             let loc = Location {
                 path: path_csv,
-                boolean: boolean,
+                boolean: true_false,
                 cnt: iv,
             };
 
@@ -598,21 +587,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let mut wtr = Writer::from_writer(file);
 
-            iv += 1;
-
             let vec = vec_row(iv, sum, perm.to_owned()); // mod function
             let vec_len = vec.len();
 
-            match iv {
-                1 => {
-                    let header: Vec<String> = title(vec_len); //mod function
+            if let 0 = iv {
+                let header: Vec<String> = title(vec_len); //mod function
 
-                    if let Err(e) = wtr.write_record(header) {
-                        error!("Could not write header to CSV file: {:?}", e);
-                        panic!("Could not write row to CSV file: {:?}", e);
-                    }
+                if let Err(e) = wtr.write_record(header) {
+                    error!("Could not write header to CSV file: {:?}", e);
+                    panic!("Could not write row to CSV file: {:?}", e);
                 }
-                _ => {}
             }
 
             if let Err(e) = wtr.write_record(vec) {
