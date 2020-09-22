@@ -25,7 +25,7 @@ pub fn title(vec_len: usize) -> Vec<String> {
 }
 
 // function constructs the rows of cypher.csv
-pub fn vec_row(row_num: isize, distance: f64, mut vec_row: Vec<&str>) -> Vec<&str> {
+pub fn vec_row(row_num: usize, distance: f64, mut vec_row: Vec<&str>) -> Vec<&str> {
     let mut vec: Vec<&str> = Vec::new();
 
     let rownum = format!("{:?}", row_num);
