@@ -4,7 +4,7 @@ use std::{fs, fs::OpenOptions};
 pub struct Location {
     pub path: String,
     pub boolean: bool,
-    pub cnt: isize,
+    pub cnt: usize,
 }
 
 pub fn path_exists(path: &str) -> bool {
@@ -47,7 +47,7 @@ pub fn write_csv(loc: Location) -> std::fs::File {
             };
             return file;
         }
-        (.. , true) => {
+        (.., true) => {
             // count > 0 and file exist (true)
             // then continue append writing.
             let file = match OpenOptions::new()
@@ -65,7 +65,7 @@ pub fn write_csv(loc: Location) -> std::fs::File {
             };
             return file;
         }
-        (.. , false) => {
+        (.., false) => {
             // file doesn't exist, create
             // & set file properties to
             // append writing.
