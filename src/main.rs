@@ -63,7 +63,8 @@
 * REVISION DATE-TIME: 20200920-19:57                                            *
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Added csv module to library. Added error                       *
-*                checking functionality                                         *                                                                                  #
+*                checking functionality.  Corrected spacing                     *
+*                in README file and add CB imgage.                              *                                                                                  #
 *********************************************************************************
 */
 
@@ -408,7 +409,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         },
     );
-    
+
     // Haversine is finished
     // Permutation begins
 
