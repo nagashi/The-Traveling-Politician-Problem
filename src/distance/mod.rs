@@ -9,6 +9,6 @@ pub fn haversine_dist(mut th1: f64, mut ph1: f64, mut th2: f64, ph2: f64) -> f64
     let r: f64 = 6371.0; // Earth radius in kilometers
     let km_to_mi = 1.609344_f64; // convert default kilometers to miles.
     let d: f64 = ((dx * dx + dy * dy + dz * dz).sqrt() / 2.0).asin() * 2.0 * r;
-    let d = ((d / km_to_mi) * 10.0).round() / 10.0; // convert distance to 1 decimal point.
-    d // To be returned
+    // convert distance to 1 decimal point.
+    ((d / km_to_mi) * 10.0).round() / 10.0 // To be returned
 }
