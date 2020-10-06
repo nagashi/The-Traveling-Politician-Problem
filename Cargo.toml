@@ -16,3 +16,4 @@ chrono = { version = "0.4.15", features = ["serde"] }
 log = "0.4.11"
 log4rs = "0.13.0"
 csv = "1.1.3"
+rusted_cypher = "1.1.0"
