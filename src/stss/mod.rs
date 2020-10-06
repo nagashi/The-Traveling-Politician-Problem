@@ -21,7 +21,7 @@ pub fn title(vec_len: usize) -> Vec<String> {
             }
         }
     }
-    header
+    header // return header
 }
 
 // function constructs the rows of cypher.csv
@@ -33,8 +33,8 @@ pub fn vec_row(row_num: usize, distance: f64, mut vec_row: Vec<&str>) -> Vec<&st
     let rownum: &'static str = string_to_static_str(rownum);
     let dist: &'static str = string_to_static_str(dist);
 
-    vec.push(rownum);
-    vec.append(&mut vec_row);
-    vec.push(dist);
-    vec // return vector
+    vec.push(rownum); // Key: row numbers
+    vec.append(&mut vec_row); // States
+    vec.push(dist); // Distance
+    vec // return vec
 }
