@@ -1,8 +1,8 @@
 use log::error;
 use std::{fs, fs::OpenOptions};
 
-pub struct Location {
-    pub path: String,
+pub struct Location<'a> {
+    pub path: &'a String,
     pub boolean: bool,
     pub cnt: usize,
 }
