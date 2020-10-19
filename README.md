@@ -30,8 +30,10 @@ Bug reports and feature requests can be filed for the Traveling Politician Probl
 
 ## License
 
-Traveling Politician Problem is released under the [MIT license](https://mit-license.org).
+Licensed under either [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) or under the [MIT license](https://mit-license.org).
+
+Unless you explicitly state otherwise,&nbsp;any contribution intentionally submitted for inclusion in this program by you,&nbsp;as defined in the Apache-2.0 license,&nbsp;shall be dual licensed as above,&nbsp;without any additional terms or conditions.
 
 ## Copyright
 
-copyright:: (c) Copyright 2020 Charles O'Riley. All Rights Reserved.
+copyright:: (c) Copyright 2020 Charles E. O'Riley Jr.&nbsp;&nbsp;All Rights Reserved.
