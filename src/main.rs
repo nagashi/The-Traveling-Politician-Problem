@@ -64,7 +64,7 @@
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Added csv module to library. Added error                       *
 *                checking functionality.  Corrected spacing                     *
-*                in README file and add CB imgage.                              *                                                                                  #
+*                in README file and add CB imgage. Added rusted_cypher          *                                                                                  #
 *********************************************************************************
 */
 
