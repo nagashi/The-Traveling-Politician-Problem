@@ -63,13 +63,11 @@
 * REVISION DATE-TIME: 20200920-19:57                                            *
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Added csv module to library. Added error                       *
-*                checking functionality.  Corrected spacing                     *
+*                checking functionality. Corrected spacing                      *
 *                in README file and add CB imgage. Added rusted_cypher          *                                                                                  #
 *********************************************************************************
 */
 
-#[macro_use]
-extern crate serde_derive;
 extern crate chrono;
 extern crate csv;
 extern crate permutohedron;
@@ -91,6 +89,7 @@ use log4rs::{
     filter::threshold::ThresholdFilter,
 };
 use permutohedron::Heap;
+use serde::Deserialize;
 use serde_json::json;
 use std::{env, f64, fs, fs::File, io::Read, string::String};
 //use rusted_cypher::GraphClient;
@@ -120,6 +119,8 @@ struct ObjLookUp {
 
 const IA: &str = "IA";
 const DC: &str = "DC";
+const LOG_PATH: &str = "log/path.log";
+const CYPHER_CSV: &str = "/cypher.csv";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Start app begin time
@@ -127,7 +128,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //Set up logging
     let level = log::LevelFilter::Info;
-    let file_path = "log/path.log";
 
     // Build a stderr logger.
     let stderr = ConsoleAppender::builder().target(Target::Stderr).build();
@@ -137,7 +137,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .encoder(Box::new(PatternEncoder::new(
             "{d(%Y-%m-%d %H:%M:%S)} Line:{L} {h([{l}])} - {m}{n}",
         )))
-        .build(file_path)
+        .build(LOG_PATH)
     {
         Ok(config) => config,
         Err(error) => {
@@ -218,9 +218,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     // append csv file to path.
-    &path_csv.push_str("/cypher.csv");
-    // does appended path exist?
-    //let true_false = path_exists(&path_csv); // mod function
+    &path_csv.push_str(CYPHER_CSV);
 
     // Read the input file to string &
     // Error(2) check for presence of file/directoery
@@ -579,7 +577,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         {
-            // determine if the path exists
+            // determine if the file exists
             let true_false = path_exists(path_csv.as_str()); // mod function (src/csv/mod.rs)
 
             let loc = Location {
@@ -599,8 +597,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let header: Vec<String> = title(vec_len); //mod function (src/stss/mod.rs)
 
                 if let Err(e) = wtr.write_record(header) {
-                    error!("Could not write header to cypher.csv: {:?}", e);
-                    panic!("Could not write row to cypher.csv: {:?}", e);
+                    error!("Could not write header to CSV file: {:?}", e);
+                    panic!("Could not write header to CSV file: {:?}", e);
                 }
             }
 

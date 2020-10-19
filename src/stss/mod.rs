@@ -9,12 +9,12 @@ pub fn title(vec_len: usize) -> Vec<String> {
 
     for i in 0..vec_len {
         match i {
-            0 => header.push("KEY".to_owned()),
-            a if a == (vec_len - 1) => header.push("DISTANCE".to_owned()),
+            0 => header.push("KEY".to_owned()), // First header column
+            a if a == (vec_len - 1) => header.push("DISTANCE".to_owned()), // Last header column
             _ => {
+                // Configure header for each state in vector
                 let mut a: String = "STATE_".to_owned();
-                let b: usize = i;
-                let b: String = b.to_string();
+                let b: String = i.to_string();
                 let b: &'static str = string_to_static_str(b);
                 a.push_str(b);
                 header.push(a);

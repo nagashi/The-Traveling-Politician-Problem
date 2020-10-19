@@ -508,7 +508,6 @@ dependencies = [
  "permutohedron",
  "rusted_cypher",
  "serde",
- "serde_derive",
  "serde_json",
 ]
 
