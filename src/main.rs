@@ -64,12 +64,10 @@
 * Charles O'Riley: +1 (615) 983-1474: ceoriley@gmail.com#                       *
 * REVISION MADE: Added csv module to library. Added error                       *
 *                checking functionality.  Corrected spacing                     *
-*                in README file and add CB imgage.                              *                                                                                  #
+*                in README file and add CB imgage. Added rusted_cypher          *                                                                                  #
 *********************************************************************************
 */
 
-#[macro_use]
-extern crate serde_derive;
 extern crate chrono;
 extern crate csv;
 extern crate permutohedron;
@@ -90,6 +88,7 @@ use log4rs::{
     filter::threshold::ThresholdFilter,
 };
 use permutohedron::Heap;
+use serde::Deserialize;
 use serde_json::json;
 use std::{env, f64, fs, fs::File, io::Read, string::String};
 
@@ -118,6 +117,8 @@ struct ObjLookUp {
 
 const IA: &str = "IA";
 const DC: &str = "DC";
+const LOG_PATH: &str = "log/path.log";
+const CYPHER_CSV: &str = "/cypher.csv";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Start app begin time
@@ -125,7 +126,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //Set up logging
     let level = log::LevelFilter::Info;
-    let file_path = "log/path.log";
 
     // Build a stderr logger.
     let stderr = ConsoleAppender::builder().target(Target::Stderr).build();
@@ -135,7 +135,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .encoder(Box::new(PatternEncoder::new(
             "{d(%Y-%m-%d %H:%M:%S)} Line:{L} {h([{l}])} - {m}{n}",
         )))
-        .build(file_path)
+        .build(LOG_PATH)
     {
         Ok(config) => config,
         Err(error) => {
@@ -192,6 +192,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Start timing;
     info!("***** BEGIN APP: {:?} *****", start_time);
+
+    // obtain the current path which will be
+    // used to push data into a csv file
+    // to import into Neo4j
+    let mut path_csv = match env::current_dir() {
+        Ok(dir) => {
+            let path_csv = match dir.into_os_string().into_string() {
+                Ok(path_csv) => path_csv,
+                Err(error) => {
+                    let msg = "Error converting path to string";
+                    error!("{:?}: {:?}", msg, error);
+                    panic!("{:?}: {:?}", msg, error);
+                }
+            };
+            path_csv
+        }
+        Err(error) => {
+            let msg = "Error finding path";
+            error!("{:?}: {:?}", msg, error);
+            panic!("{:?}: {:?}", msg, error);
+        }
+    };
+
+    // append csv file to path.
+    &path_csv.push_str(CYPHER_CSV);
 
     // Read the input file to string &
     // Error(2) check for presence of file/directoery
@@ -375,7 +400,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    let d: f64 = distance(lat1, lon1, lat2, lon2); // mod function
+    let d: f64 = distance(lat1, lon1, lat2, lon2); // mod function (src/distance/mod.rs)
     info!(
         "json object: Distance from {} to {}: {:.1} mi ",
         from_state, to_state, d
@@ -413,7 +438,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Haversine is finished
     // Permutation begins
 
-    let num = data_look_up.len() - 46; // Don't allow all 51 entries to be permutated.
+    let num = data_look_up.len() - 47; // Don't allow all 51 entries to be permutated.
     let mut data = Vec::with_capacity(num);
     debug!("Number of states to iterate through w/o IA & DC: {:?}", num);
 
@@ -529,7 +554,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 }
                             }
 
-                            let d2 = distance(_lat1, _lon1, _lat2, _lon2); // mod function
+                            let d2 = distance(_lat1, _lon1, _lat2, _lon2); // mod function (src/distance/mod.rs)
                             sum += d2; // sum up distance from one state to the next
                                        // within the vector
                             sum = (sum * 10.0).round() / 10.0; // compute to 1 digit
@@ -550,45 +575,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         {
-            // obtain the current path which will be
-            // used to push data into a csv file
-            // to import into Neo4j
-            let mut path_csv = match env::current_dir() {
-                Ok(dir) => {
-                    let path_csv = match dir.into_os_string().into_string() {
-                        Ok(path_csv) => path_csv,
-                        Err(error) => {
-                            let msg = "Error converting path to string";
-                            error!("{:?}: {:?}", msg, error);
-                            panic!("{:?}: {:?}", msg, error);
-                        }
-                    };
-                    path_csv
-                }
-                Err(error) => {
-                    let msg = "Error finding path";
-                    error!("{:?}: {:?}", msg, error);
-                    panic!("{:?}: {:?}", msg, error);
-                }
-            };
-
-            // append csv file to path.
-            path_csv.push_str("/cypher.csv");
-
             // determine if the file exists
-            let true_false = path_exists(path_csv.as_str()); // mod function
+            let true_false = path_exists(path_csv.as_str()); // mod function (src/csv/mod.rs)
 
             let loc = Location {
-                path: path_csv,
+                path: &path_csv,
                 boolean: true_false,
                 cnt: iv,
             };
 
-            let file = write_csv(loc); // mod function
+            let file = write_csv(loc); // mod function (src/csv/mod.rs)
 
             let mut wtr = Writer::from_writer(file);
 
-            let vec = vec_row(iv, sum, perm.to_owned()); // mod function
+            let vec = vec_row(iv, sum, perm.to_owned()); // mod function (src/stss/mod.rs)
             let vec_len = vec.len();
 
             if let 0 = iv {
@@ -596,7 +596,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                 if let Err(e) = wtr.write_record(header) {
                     error!("Could not write header to CSV file: {:?}", e);
-                    panic!("Could not write row to CSV file: {:?}", e);
+                    panic!("Could not write header to CSV file: {:?}", e);
                 }
             }
 
@@ -606,6 +606,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
+
+    //println!("path_csv{:?}", &path_csv);
 
     // compute time for program to run
     let end_time = Local::now().time();
